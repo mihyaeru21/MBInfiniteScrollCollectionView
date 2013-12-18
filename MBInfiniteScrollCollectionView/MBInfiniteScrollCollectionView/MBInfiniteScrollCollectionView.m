@@ -10,4 +10,14 @@
 
 @implementation MBInfiniteScrollCollectionView
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.showsHorizontalScrollIndicator = YES;
+        self.showsVerticalScrollIndicator = YES;
+    }
+    return self;
+}
+
 @end

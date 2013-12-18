@@ -15,6 +15,7 @@
 		F1D548941860A151003B1F45 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F1D548921860A151003B1F45 /* InfoPlist.strings */; };
 		F1D548961860A151003B1F45 /* MBInfiniteScrollCollectionViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F1D548951860A151003B1F45 /* MBInfiniteScrollCollectionViewTests.m */; };
 		F1D548A11860A43A003B1F45 /* MBInfiniteScrollCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1D548A01860A43A003B1F45 /* MBInfiniteScrollCollectionView.m */; };
+		F1D548E518618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F1D548E418618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		F1D548951860A151003B1F45 /* MBInfiniteScrollCollectionViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBInfiniteScrollCollectionViewTests.m; sourceTree = "<group>"; };
 		F1D5489F1860A43A003B1F45 /* MBInfiniteScrollCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBInfiniteScrollCollectionView.h; sourceTree = "<group>"; };
 		F1D548A01860A43A003B1F45 /* MBInfiniteScrollCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBInfiniteScrollCollectionView.m; sourceTree = "<group>"; };
+		F1D548E318618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBInfiniteScrollCollectionViewLayout.h; sourceTree = "<group>"; };
+		F1D548E418618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBInfiniteScrollCollectionViewLayout.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +114,8 @@
 				F1D5487C1860A150003B1F45 /* Supporting Files */,
 				F1D5489F1860A43A003B1F45 /* MBInfiniteScrollCollectionView.h */,
 				F1D548A01860A43A003B1F45 /* MBInfiniteScrollCollectionView.m */,
+				F1D548E318618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.h */,
+				F1D548E418618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.m */,
 			);
 			path = MBInfiniteScrollCollectionView;
 			sourceTree = "<group>";
@@ -222,6 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1D548E518618E2B003B1F45 /* MBInfiniteScrollCollectionViewLayout.m in Sources */,
 				F1D548A11860A43A003B1F45 /* MBInfiniteScrollCollectionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
