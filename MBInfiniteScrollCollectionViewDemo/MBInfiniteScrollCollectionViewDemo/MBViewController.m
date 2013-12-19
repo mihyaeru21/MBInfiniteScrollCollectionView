@@ -22,7 +22,7 @@
     // 適当にサンプルセルを用意する
     NSMutableArray *colors = [[NSMutableArray alloc] init];
     srand(2);
-    for (NSInteger i = 0; i < 36; i++) {
+    for (NSInteger i = 0; i < 49; i++) {
 //    for (NSInteger i = 0; i < 9; i++) {
         [colors addObject:[UIColor colorWithRed:rand()%256/255.0f green:rand()%256/255.0f blue:rand()%256/255.0f alpha:1]];
     }
@@ -53,6 +53,8 @@
 {
     UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     cell.contentView.backgroundColor = self.colors[indexPath.item];
+    UILabel *label = (UILabel *)[cell.contentView viewWithTag:1];
+    label.text = [NSString stringWithFormat:@"%d", indexPath.item];
     
     return cell;
 }

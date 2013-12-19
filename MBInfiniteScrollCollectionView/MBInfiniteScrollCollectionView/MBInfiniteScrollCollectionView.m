@@ -16,8 +16,14 @@
     if (self) {
         self.showsHorizontalScrollIndicator = YES;
         self.showsVerticalScrollIndicator = YES;
+        [self setContentOffset:CGPointMake(2500, 2500)];
     }
     return self;
+}
+
+- (void)setContentOffset:(CGPoint)contentOffset
+{
+    [super setContentOffset:contentOffset];
 }
 
 @end
