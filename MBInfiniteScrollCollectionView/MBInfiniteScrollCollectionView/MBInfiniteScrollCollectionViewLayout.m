@@ -12,8 +12,8 @@
 #pragma mark - attribute
 
 @interface MBInfiniteScrollCollectionViewLayoutAttributes : UICollectionViewLayoutAttributes
-@property (nonatomic) NSUInteger mbiscvX;
-@property (nonatomic) NSUInteger mbiscvY;
+@property (nonatomic) NSInteger mbiscvX;
+@property (nonatomic) NSInteger mbiscvY;
 - (void)shiftOrigin:(CGPoint)offset;
 @end
 
@@ -115,53 +115,48 @@
 
 - (void)shiftLeft
 {
-    for (MBInfiniteScrollCollectionViewLayoutAttributes *attributes in self.attributes_array) {
-        if (attributes.mbiscvX == self.xnum - 1) {
-            [attributes shiftOrigin:CGPointMake(-1 * (self.cellSpace + self.cellSize.width) * (self.xnum - 1), 0)];
-            attributes.mbiscvX = 0;
-        } else {
-            [attributes shiftOrigin:CGPointMake(self.cellSpace + self.cellSize.width, 0)];
-            attributes.mbiscvX += 1;
-        }
-    }
+    [self _shiftCellsWithDirection:-1 isx:YES];
 }
 
 - (void)shiftRight
 {
-    for (MBInfiniteScrollCollectionViewLayoutAttributes *attributes in self.attributes_array) {
-        if (attributes.mbiscvX == 0) {
-            [attributes shiftOrigin:CGPointMake((self.cellSpace + self.cellSize.width) * (self.xnum - 1), 0)];
-            attributes.mbiscvX = self.xnum - 1;
-        } else {
-            [attributes shiftOrigin:CGPointMake(-1 * (self.cellSpace + self.cellSize.width), 0)];
-            attributes.mbiscvX += -1;
-        }
-    }
+    [self _shiftCellsWithDirection:1 isx:YES];
 }
 
 - (void)shiftUp
 {
-    for (MBInfiniteScrollCollectionViewLayoutAttributes *attributes in self.attributes_array) {
-        if (attributes.mbiscvY == self.ynum - 1) {
-            [attributes shiftOrigin:CGPointMake(0, -1 * (self.cellSpace + self.cellSize.height) * (self.ynum - 1))];
-            attributes.mbiscvY = 0;
-        } else {
-            [attributes shiftOrigin:CGPointMake(0, self.cellSpace + self.cellSize.height)];
-            attributes.mbiscvY += 1;
-        }
-    }
+    [self _shiftCellsWithDirection:1 isx:NO];
 }
 
 - (void)shiftDown
 {
+    [self _shiftCellsWithDirection:-1 isx:NO];
+}
+
+- (void)_shiftCellsWithDirection:(NSInteger)direction isx:(BOOL)isx
+{
+    NSInteger lastIndex = isx ? self.xnum - 1 : self.ynum - 1;
+    NSInteger sourceIndex = (direction > 0) ? lastIndex : 0;
+    NSInteger targetIndex = (direction > 0) ? 0 : lastIndex;
+    
     for (MBInfiniteScrollCollectionViewLayoutAttributes *attributes in self.attributes_array) {
-        if (attributes.mbiscvY == 0) {
-            [attributes shiftOrigin:CGPointMake(0, (self.cellSpace + self.cellSize.height) * (self.ynum - 1))];
-            attributes.mbiscvY = self.ynum - 1;
+        CGPoint offset;
+        NSInteger newX, newY;
+        if ((isx ? attributes.mbiscvX : attributes.mbiscvY) == sourceIndex) {
+            offset.x = isx ? -direction * lastIndex * (self.cellSpace + self.cellSize.width) : 0;
+            offset.y = isx ? 0 : -direction * lastIndex * (self.cellSpace + self.cellSize.height);
+            newX = isx ? targetIndex : attributes.mbiscvX;
+            newY = isx ? attributes.mbiscvX : targetIndex;
         } else {
-            [attributes shiftOrigin:CGPointMake(0, -1 * (self.cellSpace + self.cellSize.height))];
-            attributes.mbiscvY += -1;
+            offset.x = isx ? direction * (self.cellSpace + self.cellSize.width) : 0;
+            offset.y = isx ? 0 : direction * (self.cellSpace + self.cellSize.height);
+            attributes.mbiscvY += direction;
+            newX = isx ? direction + attributes.mbiscvX : attributes.mbiscvX;
+            newY = isx ? attributes.mbiscvX : direction + attributes.mbiscvY;
         }
+        [attributes shiftOrigin:offset];
+        attributes.mbiscvX = newX;
+        attributes.mbiscvY = newY;
     }
 }
 
