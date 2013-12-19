@@ -7,6 +7,7 @@
 //
 
 #import "MBViewController.h"
+#import <MBInfiniteScrollCollectionViewLayout.h>
 
 @interface MBViewController ()
 @property (strong, nonatomic) NSArray *colors;
@@ -22,11 +23,18 @@
     // 適当にサンプルセルを用意する
     NSMutableArray *colors = [[NSMutableArray alloc] init];
     srand(2);
-    for (NSInteger i = 0; i < 49; i++) {
-//    for (NSInteger i = 0; i < 9; i++) {
+    for (NSInteger i = 0; i < 56; i++) {
         [colors addObject:[UIColor colorWithRed:rand()%256/255.0f green:rand()%256/255.0f blue:rand()%256/255.0f alpha:1]];
     }
     self.colors = colors;
+    
+    // collection viewの設定
+    // data sourceが提供するアイテム数と layout.xnum * layout.ynum の数が合わないとやばい
+    MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionView.collectionViewLayout;
+    layout.xnum = 8;
+    layout.ynum = 7;
+    layout.cellSpace = 5.0f;
+    layout.cellSize = CGSizeMake(150, 150);
 }
 
 - (void)didReceiveMemoryWarning
@@ -41,6 +49,7 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
+    // section数1しか想定していない
     return 1;
 }
 

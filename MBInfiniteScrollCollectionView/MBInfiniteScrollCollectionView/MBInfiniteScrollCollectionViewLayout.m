@@ -47,27 +47,11 @@
     if (self) {
         _cellSpace = 10.0f;
         _cellSize  = CGSizeMake(150, 150);
-        _xnum = 7;
-        _ynum = 7;
+        _xnum = 0;
+        _ynum = 0;
         _attributesArray = [[NSMutableArray alloc] init];
-        
         _scrollOrigin = CGPointMake(5000, 5000);
-        for (NSUInteger y = 0; y < self.ynum; y++) {
-            NSMutableArray *row = [[NSMutableArray alloc] init];
-            for (NSUInteger x = 0; x < self.xnum; x++) {
-                CGPoint origin = CGPointMake((self.cellSpace + self.cellSize.width) * x, (self.cellSpace + self.cellSize.height) * y);
-                origin.x += self.scrollOrigin.x;
-                origin.y += self.scrollOrigin.y;
-                CGRect frame = CGRectMake(origin.x, origin.y, self.cellSize.width, self.cellSize.height);
-                MBInfiniteScrollCollectionViewLayoutAttributes *attributes = [MBInfiniteScrollCollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:[NSIndexPath indexPathForItem:y*self.xnum+x  inSection:0]];
-                attributes.frame = frame;
-                attributes.mbiscvX = x;
-                attributes.mbiscvY = y;
-                [self.attributesArray addObject:attributes];
-                [row addObject:attributes];
-            }
-        }
-        [self shiftCellsWithCenterCellIndex:0];
+        [self layoutCells];
     }
     return self;
 }
@@ -123,6 +107,8 @@
 
 - (void)shiftCellsWithCenterCellIndex:(NSInteger)centerIndex
 {
+    if (self.attributesArray.count == 0) return;
+    
     MBInfiniteScrollCollectionViewLayoutAttributes *attributes = self.attributesArray[centerIndex];
     NSInteger offsetX = self.xnum / 2 - attributes.mbiscvX;
     NSInteger offsetY = self.ynum / 2 - attributes.mbiscvY;
@@ -143,6 +129,54 @@
         frame.origin.y += offset.y;
         attributes.frame = frame;
     }
+}
+
+- (void)layoutCells
+{
+    [self.attributesArray removeAllObjects];
+    for (NSUInteger y = 0; y < self.ynum; y++) {
+        NSMutableArray *row = [[NSMutableArray alloc] init];
+        for (NSUInteger x = 0; x < self.xnum; x++) {
+            CGPoint origin = CGPointMake((self.cellSpace + self.cellSize.width) * x, (self.cellSpace + self.cellSize.height) * y);
+            origin.x += self.scrollOrigin.x;
+            origin.y += self.scrollOrigin.y;
+            CGRect frame = CGRectMake(origin.x, origin.y, self.cellSize.width, self.cellSize.height);
+            MBInfiniteScrollCollectionViewLayoutAttributes *attributes = [MBInfiniteScrollCollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:[NSIndexPath indexPathForItem:y*self.xnum+x  inSection:0]];
+            attributes.frame = frame;
+            attributes.mbiscvX = x;
+            attributes.mbiscvY = y;
+            [self.attributesArray addObject:attributes];
+            [row addObject:attributes];
+        }
+    }
+    [self shiftCellsWithCenterCellIndex:0];
+}
+
+
+#pragma mark - property
+
+- (void)setCellSpace:(CGFloat)cellSpace
+{
+    _cellSpace = cellSpace;
+    [self layoutCells];
+}
+
+- (void)setCellSize:(CGSize)cellSize
+{
+    _cellSize = cellSize;
+    [self layoutCells];
+}
+
+- (void)setXnum:(NSInteger)xnum
+{
+    _xnum = xnum;
+    [self layoutCells];
+}
+
+- (void)setYnum:(NSInteger)ynum
+{
+    _ynum = ynum;
+    [self layoutCells];
 }
 
 @end
