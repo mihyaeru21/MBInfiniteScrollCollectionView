@@ -17,5 +17,6 @@
 @property (nonatomic, readonly) CGPoint scrollOrigin;
 
 - (void)shiftCellsWithCenterCellIndex:(NSInteger)centerIndex;
+- (void)shiftAllCellsOffset:(CGPoint)offset;
 
 @end

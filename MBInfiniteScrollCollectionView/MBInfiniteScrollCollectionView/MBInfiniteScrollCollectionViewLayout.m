@@ -135,4 +135,14 @@
     }
 }
 
+- (void)shiftAllCellsOffset:(CGPoint)offset
+{
+    for (MBInfiniteScrollCollectionViewLayoutAttributes *attributes in self.attributesArray) {
+        CGRect frame = attributes.frame;
+        frame.origin.x += offset.x;
+        frame.origin.y += offset.y;
+        attributes.frame = frame;
+    }
+}
+
 @end

@@ -22,8 +22,8 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.showsHorizontalScrollIndicator = YES;
-        self.showsVerticalScrollIndicator = YES;
+        self.showsHorizontalScrollIndicator = NO;
+        self.showsVerticalScrollIndicator = NO;
         MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
         [self setContentOffset:layout.scrollOrigin];
         _prevCellIndex = 0;
@@ -31,26 +31,51 @@
     return self;
 }
 
+
+#pragma mark - override
+
 - (void)setContentOffset:(CGPoint)contentOffset
 {
     [super setContentOffset:contentOffset];
-    NSIndexPath *ip = [self indexPathForItemAtPoint:[self convertPoint:self.center fromView:self.superview]];
-    
-    if (!ip) return;
-    if (ip.item == _prevCellIndex) return;
-    
-    NSLog(@"center: %@", NSStringFromCGPoint(self.center));
-    NSLog(@"indexPath: %@", ip);
-
-    _prevCellIndex = ip.item;
-    [(MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout shiftCellsWithCenterCellIndex:ip.item];
-    [self.collectionViewLayout invalidateLayout];
+    [self shiftCellsIfNecessary];
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    // セルをずらしてスクロールをさせる
+    [self recenterIfNecessary];
+}
+
+
+#pragma mark -
+
+- (void)shiftCellsIfNecessary
+{
+    NSIndexPath *indexPath = [self indexPathForItemAtPoint:[self convertPoint:self.center fromView:self.superview]];
+    
+    if (!indexPath) return;
+    if (indexPath.item == _prevCellIndex) return;
+    
+    _prevCellIndex = indexPath.item;
+    MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
+    [layout shiftCellsWithCenterCellIndex:indexPath.item];
+    [layout invalidateLayout];
+}
+
+- (void)recenterIfNecessary
+{
+    MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
+    CGPoint scrollOrigin = layout.scrollOrigin;
+    CGPoint scrollOffset;
+    scrollOffset.x = scrollOrigin.x - self.contentOffset.x;
+    scrollOffset.y = scrollOrigin.y - self.contentOffset.y;
+    
+    if (fabs(scrollOffset.x) < scrollOrigin.x / 2 && fabs(scrollOffset.y) < scrollOrigin.y / 2)
+        return;
+        
+    [self setContentOffset:scrollOrigin];
+    [layout shiftAllCellsOffset:scrollOffset];
+    [layout invalidateLayout];
 }
 
 @end
