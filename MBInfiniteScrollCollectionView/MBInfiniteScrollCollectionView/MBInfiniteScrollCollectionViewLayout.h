@@ -12,7 +12,10 @@
 
 @property (nonatomic) CGFloat cellSpace;
 @property (nonatomic) CGSize cellSize;
-@property (nonatomic) NSUInteger xnum;
-@property (nonatomic) NSUInteger ynum;
+@property (nonatomic) NSInteger xnum;
+@property (nonatomic) NSInteger ynum;
+@property (nonatomic, readonly) CGPoint scrollOrigin;
+
+- (void)shiftCellsWithCenterCellIndex:(NSInteger)centerIndex;
 
 @end
