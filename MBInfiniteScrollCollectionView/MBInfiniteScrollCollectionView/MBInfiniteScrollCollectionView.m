@@ -51,7 +51,8 @@
 
 - (void)shiftCellsIfNecessary
 {
-    NSIndexPath *indexPath = [self indexPathForItemAtPoint:[self convertPoint:self.center fromView:self.superview]];
+    NSInteger index = [self indexOfNearestCenter];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
     
     if (!indexPath) return;
     if (indexPath.item == _prevCellIndex) return;
@@ -76,6 +77,24 @@
     [self setContentOffset:scrollOrigin];
     [layout shiftAllCellsOffset:scrollOffset];
     [layout invalidateLayout];
+}
+
+// viewの中央に最も近いcellのindexを得る
+- (NSInteger)indexOfNearestCenter
+{
+    CGPoint center = [self convertPoint:self.center fromView:self.superview];
+    NSInteger nearestIndex;
+    CGFloat minDistance = CGFLOAT_MAX;
+    for (NSInteger index = 0; index < [self numberOfItemsInSection:0]; index++) {
+        UICollectionViewCell *cell = [self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
+        CGPoint cellOrigin = cell.frame.origin;
+        CGFloat distance = sqrt((cellOrigin.x - center.x) * (cellOrigin.x - center.x) + (cellOrigin.y - center.y) * (cellOrigin.y - center.y));
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestIndex = index;
+        }
+    }
+    return nearestIndex;
 }
 
 @end
