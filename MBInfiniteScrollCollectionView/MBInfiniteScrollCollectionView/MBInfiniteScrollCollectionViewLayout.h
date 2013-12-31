@@ -16,8 +16,9 @@
 @property (nonatomic) NSInteger ynum;
 @property (nonatomic, readonly) CGPoint scrollOrigin;
 
-- (void)shiftCellsWithCenterCellIndex:(NSInteger)centerIndex;
-- (void)shiftAllCellsOffset:(CGPoint)offset;
+- (NSInteger)indexOfNearestCenter:(CGPoint)center;
+- (void)recenterIfNecessaryWithContentOffset:(CGPoint)contentOffset;
+- (void)shiftCellsIfNecessaryWithIndex:(NSInteger)index;
 - (void)shiftCellsIfOutOfViewWithIndex:(NSInteger)index center:(CGPoint)center size:(CGSize)viewSize;
 
 @end

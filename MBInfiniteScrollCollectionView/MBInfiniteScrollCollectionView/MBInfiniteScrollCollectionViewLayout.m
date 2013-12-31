@@ -31,6 +31,9 @@
 #pragma mark -
 
 @interface MBInfiniteScrollCollectionViewLayout()
+{
+    NSInteger _prevCellIndex;
+}
 
 @property (strong, nonatomic) NSMutableArray *attributesArray;
 
@@ -51,6 +54,7 @@
         _ynum = 0;
         _attributesArray = [[NSMutableArray alloc] init];
         _scrollOrigin = CGPointMake(5000, 5000);
+        _prevCellIndex = 0;
         [self layoutCells];
     }
     return self;
@@ -122,6 +126,29 @@
     
 }
 
+- (void)recenterIfNecessaryWithContentOffset:(CGPoint)contentOffset
+{
+    CGPoint scrollOffset;
+    scrollOffset.x = self.scrollOrigin.x - contentOffset.x;
+    scrollOffset.y = self.scrollOrigin.y - contentOffset.y;
+    
+    if (fabs(scrollOffset.x) < self.scrollOrigin.x / 2 && fabs(scrollOffset.y) < self.scrollOrigin.y / 2)
+        return;
+        
+    [self.collectionView setContentOffset:self.scrollOrigin];
+    [self shiftAllCellsOffset:scrollOffset];
+    [self invalidateLayout];
+}
+
+- (void)shiftCellsIfNecessaryWithIndex:(NSInteger)index
+{
+    if (index == _prevCellIndex) return;
+    
+    _prevCellIndex = index;
+    [self shiftCellsWithCenterCellIndex:index];
+    [self invalidateLayout];
+}
+
 - (void)shiftCellsIfOutOfViewWithIndex:(NSInteger)index center:(CGPoint)center size:(CGSize)viewSize
 {
     MBInfiniteScrollCollectionViewLayoutAttributes *attributes = self.attributesArray[index];
@@ -133,7 +160,6 @@
     if (fabs(centerOffset.x) < viewSize.width / 2 && fabs(centerOffset.y) < viewSize.height / 2)
         return;
     
-    // scrollOriginと新たな中心とのずれを修正して、scrollOriginへスクロールすれば大丈夫そう
     CGPoint scrollOffset;
     scrollOffset.x = self.scrollOrigin.x - attributes.center.x;
     scrollOffset.y = self.scrollOrigin.y - attributes.center.y;
@@ -171,6 +197,22 @@
         }
     }
     [self shiftCellsWithCenterCellIndex:0];
+}
+
+- (NSInteger)indexOfNearestCenter:(CGPoint)center
+{
+    NSInteger nearestIndex;
+    CGFloat minDistance = CGFLOAT_MAX;
+    for (NSInteger index = 0; index < self.attributesArray.count; index++) {
+        MBInfiniteScrollCollectionViewLayoutAttributes *attributes = self.attributesArray[index];
+        CGPoint cellOrigin = attributes.center;
+        CGFloat distance = sqrt((cellOrigin.x - center.x) * (cellOrigin.x - center.x) + (cellOrigin.y - center.y) * (cellOrigin.y - center.y));
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestIndex = index;
+        }
+    }
+    return nearestIndex;
 }
 
 
