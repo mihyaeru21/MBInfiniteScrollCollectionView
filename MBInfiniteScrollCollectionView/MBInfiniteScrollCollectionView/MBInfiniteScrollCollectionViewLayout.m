@@ -119,6 +119,27 @@
     for (NSInteger i = 0; i < abs(offsetY); i++) {
         [self _shiftCellsWithDirection:offsetY/abs(offsetY) isx:NO];
     }
+    
+}
+
+- (void)shiftCellsIfOutOfViewWithIndex:(NSInteger)index center:(CGPoint)center size:(CGSize)viewSize
+{
+    MBInfiniteScrollCollectionViewLayoutAttributes *attributes = self.attributesArray[index];
+    
+    CGPoint centerOffset;
+    centerOffset.x = center.x - attributes.center.x;
+    centerOffset.y = center.y - attributes.center.y;
+    
+    if (fabs(centerOffset.x) < viewSize.width / 2 && fabs(centerOffset.y) < viewSize.height / 2)
+        return;
+    
+    // scrollOriginと新たな中心とのずれを修正して、scrollOriginへスクロールすれば大丈夫そう
+    CGPoint scrollOffset;
+    scrollOffset.x = self.scrollOrigin.x - attributes.center.x;
+    scrollOffset.y = self.scrollOrigin.y - attributes.center.y;
+    [self.collectionView setContentOffset:self.scrollOrigin];
+    [self shiftAllCellsOffset:scrollOffset];
+    [self invalidateLayout];
 }
 
 - (void)shiftAllCellsOffset:(CGPoint)offset

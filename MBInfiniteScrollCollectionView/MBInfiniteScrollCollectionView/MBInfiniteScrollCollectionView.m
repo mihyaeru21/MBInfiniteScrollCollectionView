@@ -34,15 +34,10 @@
 
 #pragma mark - override
 
-- (void)setContentOffset:(CGPoint)contentOffset
-{
-    [super setContentOffset:contentOffset];
-    [self shiftCellsIfNecessary];
-}
-
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    [self shiftCellsIfNecessary];
     [self recenterIfNecessary];
 }
 
@@ -52,15 +47,17 @@
 - (void)shiftCellsIfNecessary
 {
     NSInteger index = [self indexOfNearestCenter];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
-    
-    if (!indexPath) return;
-    if (indexPath.item == _prevCellIndex) return;
-    
-    _prevCellIndex = indexPath.item;
     MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
-    [layout shiftCellsWithCenterCellIndex:indexPath.item];
-    [layout invalidateLayout];
+    
+    if (index != _prevCellIndex) {
+        _prevCellIndex = index;
+        [layout shiftCellsWithCenterCellIndex:index];
+        [layout invalidateLayout];
+    }
+    
+    
+    CGPoint center = [self convertPoint:self.center fromView:self.superview];
+    [layout shiftCellsIfOutOfViewWithIndex:index center:center size:self.bounds.size];
 }
 
 - (void)recenterIfNecessary
@@ -87,7 +84,7 @@
     CGFloat minDistance = CGFLOAT_MAX;
     for (NSInteger index = 0; index < [self numberOfItemsInSection:0]; index++) {
         UICollectionViewCell *cell = [self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
-        CGPoint cellOrigin = cell.frame.origin;
+        CGPoint cellOrigin = cell.center;
         CGFloat distance = sqrt((cellOrigin.x - center.x) * (cellOrigin.x - center.x) + (cellOrigin.y - center.y) * (cellOrigin.y - center.y));
         if (distance < minDistance) {
             minDistance = distance;

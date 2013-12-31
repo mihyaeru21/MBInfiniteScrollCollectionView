@@ -18,5 +18,6 @@
 
 - (void)shiftCellsWithCenterCellIndex:(NSInteger)centerIndex;
 - (void)shiftAllCellsOffset:(CGPoint)offset;
+- (void)shiftCellsIfOutOfViewWithIndex:(NSInteger)index center:(CGPoint)center size:(CGSize)viewSize;
 
 @end
