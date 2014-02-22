@@ -151,6 +151,7 @@
 
 - (void)shiftCellsIfOutOfViewWithIndex:(NSInteger)index center:(CGPoint)center size:(CGSize)viewSize
 {
+    if (self.attributesArray.count == 0) return;
     MBInfiniteScrollCollectionViewLayoutAttributes *attributes = self.attributesArray[index];
     
     CGPoint centerOffset;
@@ -201,7 +202,7 @@
 
 - (NSInteger)indexOfNearestCenter:(CGPoint)center
 {
-    NSInteger nearestIndex;
+    NSInteger nearestIndex = 0;
     CGFloat minDistance = CGFLOAT_MAX;
     for (NSInteger index = 0; index < self.attributesArray.count; index++) {
         MBInfiniteScrollCollectionViewLayoutAttributes *attributes = self.attributesArray[index];

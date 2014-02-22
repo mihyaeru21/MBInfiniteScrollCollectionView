@@ -10,6 +10,9 @@
 #import "MBInfiniteScrollCollectionViewLayout.h"
 
 @interface MBInfiniteScrollCollectionView ()
+{
+    BOOL _isInitialized;
+}
 @end
 
 @implementation MBInfiniteScrollCollectionView
@@ -20,8 +23,7 @@
     if (self) {
         self.showsHorizontalScrollIndicator = NO;
         self.showsVerticalScrollIndicator = NO;
-        MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
-        [self setContentOffset:layout.scrollOrigin];
+        _isInitialized = NO;
     }
     return self;
 }
@@ -33,8 +35,18 @@
 {
     [super layoutSubviews];
     
+    // ここでcontentOffsetを指定しないとCollectionViewControllerを使った時に初期座標がずれる
+    // initだとダメ
+    if (!_isInitialized) {
+        MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
+        [self setContentOffset:layout.scrollOrigin];
+        _isInitialized = YES;
+    }
+    
     MBInfiniteScrollCollectionViewLayout *layout = (MBInfiniteScrollCollectionViewLayout *)self.collectionViewLayout;
-    CGPoint center = [self convertPoint:self.center fromView:self.superview];
+    CGPoint center = [self contentOffset];
+    center.x += self.bounds.size.width / 2;
+    center.y += self.bounds.size.height / 2;
     NSInteger index = [layout indexOfNearestCenter:center];
     
     [layout shiftCellsIfNecessaryWithIndex:index];
